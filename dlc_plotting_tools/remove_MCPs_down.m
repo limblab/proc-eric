@@ -5,9 +5,9 @@ COM = zeros(height(data),3);
 
 for frame = 1:height(data)
     
-    xs = data(frame,1:3:35);
-    ys = data(frame,2:3:35);
-    zs = data(frame,3:3:35);
+    xs = data(frame,1:3:21);
+    ys = data(frame,2:3:21);
+    zs = data(frame,3:3:21);
     
     x_mean = nanmean(xs);
     y_mean = nanmean(ys);
