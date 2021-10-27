@@ -1,14 +1,21 @@
-function plot_ppca_lpf(joint_interested, data, ppca1, ppca2, ppca3, ppca4,ppca5,ppca6,vel_ppca1, vel_ppca2, vel_ppca3, vel_ppca4, vel_ppca5,vel_ppca6)
-% For integrating before ppca
+function plot_ppca_lpf_get_vels(joint_interested, data, ppca1, ppca2, ppca3, ppca4, ppca5, ppca6)
+% for integrating after PPCA
 
-% Low-pass filters the input data at 5 Hz, but needs velocities for ppca
-% too
+% Low-pass filters the input data at 5 Hz, calculates velocities for input
+% data and 6 ppca
+
 %% Setup
 
 pos_lpf = lowpass(data,5,30);
 
 vel_data = get_vel_from_pos(data);
 vel_lpf = get_vel_from_pos(pos_lpf);
+vel_ppca1 = get_vel_from_pos(ppca1);
+vel_ppca2 = get_vel_from_pos(ppca2);
+vel_ppca3 = get_vel_from_pos(ppca3);
+vel_ppca4 = get_vel_from_pos(ppca4);
+vel_ppca5 = get_vel_from_pos(ppca5);
+vel_ppca6 = get_vel_from_pos(ppca6);
 
 [x,y,z] = get_joint_coords(data, joint_interested);
 
