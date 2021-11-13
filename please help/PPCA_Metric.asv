@@ -51,7 +51,7 @@ do_scramble = 0;
 
 for k = 1 % number of iterations of random dropping and interpolating to run
     ms = randperm(21); % randomly select markers
-    for i = 1:5 % Number of Markers Dropped
+    for i = 1 % Number of Markers Dropped
 
         marker_selected = ms(1:markers_to_drop(i));% markers to drop
         marker = [markers{marker_selected}];
@@ -87,7 +87,7 @@ for k = 1 % number of iterations of random dropping and interpolating to run
 
             dropped_before = original(isnan(dropped));
             dropped_after = interpolated(isnan(dropped));
-            dropped_scram = interp_scram(isnan(dropped));
+            dropped_scram = interp_scram(isnan(Input_test_scram'));
             
             error(i,j,k) = sum(abs(dropped_after - dropped_before)) / sum(sum(isnan(Input_test))); % average error on interpolated points
             error_scram(i,j,k) = sum(abs(dropped_scram - dropped_before)) / sum(sum(isnan(Input_test)));
@@ -101,11 +101,7 @@ end
 check = error(:,1);
 figure
 % heatmap(mean(check,3))
-plot(markers_to_drop,error(:,1),'linewidth',4); hold on
-plot(markers_to_drop,error_scram(:,1),'linewidth',3,'linestyle','--')
-% xlabel('Consecutive Frames Dropped')
-% ylabel('Number of Markers Dropped')
-% title('Average Error on Interpolated Frames')
-
-xlabel('Number of markers dropped');
-ylabel('Error')
+plot(markers_to_drop,check)
+xlabel('Consecutive Frames Dropped')
+ylabel('Number of Markers Dropped')
+title('Average Error on Interpolated Frames')
