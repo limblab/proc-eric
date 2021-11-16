@@ -7,7 +7,6 @@ function interpolated = ppca_interpolation(data)
     % interpolated -> array of DLC tracking with NaNs interpolated
     
 
-    
     tic
     [~,~,~,~,~,S] = ppca(data,7);
     toc
