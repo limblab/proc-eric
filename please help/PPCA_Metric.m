@@ -85,12 +85,12 @@ markers_to_drop = [1 4 8 16 20];
             % Interpolate
             tic
     %        interpolated = interpolation_method(Input_test')';
-            interp_full = ppca_interpolation(Input_full_test);
+     %       interp_full = ppca_interpolation(Input_full_test);
     %        interpolated = pca_interpolation(Input_test');
             %interp_scram = pca_interpolation(Input_test_scram');
     %        interp_scram_full = pca_interpolation(scrambled_full);
   
-    %        interp_full = pca_interpolation(Input_full_test);
+            interp_full = pca_interpolation(Input_full_test);
             toc
             
             % undo scrambling before computing error to match up data
@@ -144,28 +144,28 @@ figure
 hold on
 % heatmap(mean(check,3))
 %plot(markers_to_drop,error(:,1),'linewidth',4); hold on
-plot(markers_to_drop,error_full(:,1),'linewidth',4,'Color','#0072BD');
-plot(markers_to_drop,error_full(:,2),'linewidth',3,'Color','#EDB120')
-plot(markers_to_drop,error_full(:,3),'linewidth',3,'Color','#77AC30');
+plot(markers_to_drop,mean(linear_svd_13k_error,3),'linewidth',3,'Color','#0072BD');
+plot(markers_to_drop,mean(linear_svd_47k_error,3),'linewidth',3,'Color','#EDB120')
+%plot(markers_to_drop,error_full(:,3),'linewidth',3,'Color','#77AC30');
 % xlabel('Consecutive Frames Dropped')
 % ylabel('Number of Markers Dropped')
 % title('Average Error on Interpolated Frames')
 
 xlabel('Number of markers dropped')
 ylabel('Error')
-legend('PPCA','PCA - ALS','PCA - SVD')
-title('Interpolation Error by Markers Dropped - 7 PCs')
+legend('13.5k frames','47k frames')
+title('PCA - SVD Error by Markers Dropped - 7 PCs')
 
 %% Plot times
 figure
 hold on
 
-plot(markers_to_drop,times(:,1),'linewidth',4,'Color','#0072BD');
-plot(markers_to_drop,times(:,2),'linewidth',3,'Color','#EDB120')
-plot(markers_to_drop,times(:,3),'linewidth',3,'Color','#77AC30');
+plot(markers_to_drop,mean(linear_svd_13k_times,3),'linewidth',3,'Color','#0072BD');
+plot(markers_to_drop,mean(linear_svd_47k_times,3),'linewidth',3,'Color','#EDB120')
+%plot(markers_to_drop,times(:,3),'linewidth',3,'Color','#77AC30');
 
 xlabel('Number of markers dropped')
 ylabel('Time to compute (s)')
-legend('PPCA','PCA - ALS','PCA - SVD')
+legend('13.5k frames','47k frames')
 title('Computation time comparison')
-ylim([500 1500])
+ylim([0.2 1.5])
