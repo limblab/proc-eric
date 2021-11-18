@@ -50,14 +50,14 @@ scrambled = Input(:,randperm(size(Input, 2)));
 markers_to_drop = [1 4 8 16 20];
 
 %% Interpolate
-error = [];
-error_scram = [];
-error_full = [];
-do_scramble = 0;
+%error = [];
+%error_scram = [];
+%error_full = [];
+%do_scramble = 0;
 
-for k = 1 % number of iterations of random dropping and interpolating to run
-    ms = randperm(21); % randomly select markers
-    for i = 1:5 % Number of Markers Dropped
+%for k = 1 % number of iterations of random dropping and interpolating to run
+ %   ms = randperm(21); % randomly select markers
+    for i = 4:5 % Number of Markers Dropped
 
         marker_selected = ms(1:markers_to_drop(i));% markers to drop
         marker = [markers{marker_selected}];
@@ -85,12 +85,12 @@ for k = 1 % number of iterations of random dropping and interpolating to run
             % Interpolate
             tic
     %        interpolated = interpolation_method(Input_test')';
-            %interp_full = ppca_interpolation(Input_full_test);
+            interp_full = ppca_interpolation(Input_full_test);
     %        interpolated = pca_interpolation(Input_test');
             %interp_scram = pca_interpolation(Input_test_scram');
     %        interp_scram_full = pca_interpolation(scrambled_full);
   
-            interp_full = pca_interpolation(Input_full_test);
+    %        interp_full = pca_interpolation(Input_full_test);
             toc
             
             % undo scrambling before computing error to match up data
@@ -119,28 +119,53 @@ for k = 1 % number of iterations of random dropping and interpolating to run
             full_before = full_before(~dont_test);
             dropped_full = dropped_full(~dont_test);
  %           dropped_full_scram = dropped_scram_full(~dont_test);
-            
+ 
+            if sum(sum(isnan(dropped_full))) > 0 %ppca not interpolating long stretches of all markers dropped
+                not_interpolated = isnan(dropped_full);
+                full_before = full_before(~not_interpolated);
+                dropped_full = dropped_full(~not_interpolated);
+            end
+                
            % error(i,j,k) = sum(abs(dropped_after - dropped_before)) / sum(sum(isnan(Input_test))); % average error on interpolated points
 %            error_scram(i,j,k) = sum(abs(dropped_scram - dropped_before)) / sum(sum(isnan(Input_test)));
              error_full(i,j,k) = sum(abs(dropped_full - full_before)) / numel(dropped_full); %different format, but might change if we're looking frame by frame, or at all NaNs
 %            error_full_ppca(i,j,k) = sum(abs(dropped_full - full_before)) / numel(dropped_full); %different format, but might change if we're looking frame by frame, or at all NaNs
 %            error_full_scram(i,j,k) = sum(abs(dropped_full_scram - full_before)) / numel(dropped_full_scram);
 %        end
+
+
     end
-end
+%end
 
 
 %% Create heatmap of average error over k runs
 %check = error(:,1);
 figure
+hold on
 % heatmap(mean(check,3))
 %plot(markers_to_drop,error(:,1),'linewidth',4); hold on
-plot(markers_to_drop,error_full(:,1),'linewidth',4); hold on
-%plot(markers_to_drop,error_scram(:,1),'linewidth',3,'linestyle','--')
+plot(markers_to_drop,error_full(:,1),'linewidth',4,'Color','#0072BD');
+plot(markers_to_drop,error_full(:,2),'linewidth',3,'Color','#EDB120')
+plot(markers_to_drop,error_full(:,3),'linewidth',3,'Color','#77AC30');
 % xlabel('Consecutive Frames Dropped')
 % ylabel('Number of Markers Dropped')
 % title('Average Error on Interpolated Frames')
 
-xlabel('Number of markers dropped');
-ylabel('Error (mm)')
-title('Interpolation Error by Markers Dropped')
+xlabel('Number of markers dropped')
+ylabel('Error')
+legend('PPCA','PCA - ALS','PCA - SVD')
+title('Interpolation Error by Markers Dropped - 7 PCs')
+
+%% Plot times
+figure
+hold on
+
+plot(markers_to_drop,times(:,1),'linewidth',4,'Color','#0072BD');
+plot(markers_to_drop,times(:,2),'linewidth',3,'Color','#EDB120')
+plot(markers_to_drop,times(:,3),'linewidth',3,'Color','#77AC30');
+
+xlabel('Number of markers dropped')
+ylabel('Time to compute (s)')
+legend('PPCA','PCA - ALS','PCA - SVD')
+title('Computation time comparison')
+ylim([500 1500])
