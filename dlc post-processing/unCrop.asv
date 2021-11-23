@@ -10,13 +10,13 @@ for frame = 1:height(cam_0)
     
     for bp_x = 2:3:64
         if cam_0(frame,bp_x) > 50
-            cam_0(frame,bp_x) = cam_0(frame,bp_x) + 800;
+            cam_0(frame,bp_x) = cam_0(frame,bp_x) + 900;
         end
     end
     
     for bp_y = 3:3:64
         if cam_0(frame,bp_y) > 50
-            cam_0(frame,bp_y) = cam_0(frame,bp_y) + 300;
+            cam_0(frame,bp_y) = cam_0(frame,bp_y) + 525;
         end
     end
     
@@ -30,13 +30,13 @@ for frame = 1:height(cam_1)
     
     for bp_x = 2:3:64
         if cam_1(frame,bp_x) > 50
-            cam_1(frame,bp_x) = cam_1(frame,bp_x) + 100;
+            cam_1(frame,bp_x) = cam_1(frame,bp_x) + 750;
         end
     end
     
     for bp_y = 3:3:64
         if cam_1(frame,bp_y) > 50
-            cam_1(frame,bp_y) = cam_1(frame,bp_y) + 0;
+            cam_1(frame,bp_y) = cam_1(frame,bp_y) + 575;
         end
     end
     
@@ -50,13 +50,13 @@ for frame = 1:height(cam_2)
     
     for bp_x = 2:3:64
         if cam_2(frame,bp_x) > 50
-            cam_2(frame,bp_x) = cam_2(frame,bp_x) + 0;
+            cam_2(frame,bp_x) = cam_2(frame,bp_x) + 700;
         end
     end
     
     for bp_y = 3:3:64
         if cam_2(frame,bp_y) > 50
-            cam_2(frame,bp_y) = cam_2(frame,bp_y) + 100;
+            cam_2(frame,bp_y) = cam_2(frame,bp_y) + 0;
         end
     end
     
@@ -71,13 +71,13 @@ for frame = 1:height(cam_3)
     
     for bp_x = 2:3:64
         if cam_3(frame,bp_x) > 50
-            cam_3(frame,bp_x) = cam_3(frame,bp_x) + 700;
+            cam_3(frame,bp_x) = cam_3(frame,bp_x) + 850;
         end
     end
     
     for bp_y = 3:3:64
         if cam_3(frame,bp_y) > 50
-            cam_3(frame,bp_y) = cam_3(frame,bp_y) + 100;
+            cam_3(frame,bp_y) = cam_3(frame,bp_y) + 425;
         end
     end
     
@@ -88,4 +88,4 @@ end
 writematrix(cam_0,'/Users/ercrg/LimbLab/data/Pop_18E3/FIU Datashare/20211111/106/cam_0_output.csv');
 writematrix(cam_1,'/Users/ercrg/LimbLab/data/Pop_18E3/FIU Datashare/20211111/106/cam_1_output.csv');
 writematrix(cam_2,'/Users/ercrg/LimbLab/data/Pop_18E3/FIU Datashare/20211111/106/cam_2_output.csv');
-writematrix(cam_3,'/Users/ercrg/LimbLab/data/Pop_18E3/FIU Datashare/20211111/106/cam_3_output.csv');
+writematrix(cam_3,'/Users/ercrg/LimbLab/data/Pop_18E3/FIU Datashare/20211105/106/cam_3_output.csv');

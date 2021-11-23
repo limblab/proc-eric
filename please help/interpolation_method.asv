@@ -1,11 +1,20 @@
-function [interpolated, explained, coeff] = svd_interpolation(data, num_pcs)
+function [interpolated, explained, coeff] = interpolation_method(data, num_pcs)
     % this function runs a linear interpolation on an input set of data
    
     % Inputs
     % data -> array of DeepLabCut tracking data to interpolate
     % Outputs
     % interpolated -> array of DLC tracking with NaNs interpolated
-
+    
+        
+        nanx = isnan(data);
+        t = 1:numel(data);
+        data(nanx) = interp1(t(~nanx), data(~nanx), t(nanx));
+        
+        %seems interp1 isn't filling in some NaNs?
+        if sum(sum(isnan
+        
+%        interpolated = data;
  
         [coeff,score,~,~,explained,mu] = pca(data,'NumComponents',num_pcs);
  

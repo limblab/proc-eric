@@ -55,15 +55,15 @@ markers_to_drop = [1 4 8 16 20];
 %error_full = [];
 %do_scramble = 0;
 
-%for k = 1 % number of iterations of random dropping and interpolating to run
- %   ms = randperm(21); % randomly select markers
-    for i = 4:5 % Number of Markers Dropped
+for k = 1:20 % number of iterations of random dropping and interpolating to run
+    ms = randperm(21); % randomly select markers
+    for i = 1:5 % Number of Markers Dropped
 
         marker_selected = ms(1:markers_to_drop(i));% markers to drop
         marker = [markers{marker_selected}];
         number = round(length(Input)*(10/100)); % number of groups of consecuative frames to drop
 
-%        for j = 1 % number of consecuative frames marker is dropped
+        for j = 1:5 % number of consecuative frames marker is dropped
     
             % Drop tracking in selected frames
 
@@ -131,11 +131,11 @@ markers_to_drop = [1 4 8 16 20];
              error_full(i,j,k) = sum(abs(dropped_full - full_before)) / numel(dropped_full); %different format, but might change if we're looking frame by frame, or at all NaNs
 %            error_full_ppca(i,j,k) = sum(abs(dropped_full - full_before)) / numel(dropped_full); %different format, but might change if we're looking frame by frame, or at all NaNs
 %            error_full_scram(i,j,k) = sum(abs(dropped_full_scram - full_before)) / numel(dropped_full_scram);
-%        end
+        end
 
 
-    end
-%end
+        end
+        end
 
 
 %% Create heatmap of average error over k runs

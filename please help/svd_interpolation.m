@@ -1,5 +1,6 @@
-function [interpolated, explained, coeff] = svd_interpolation(data, num_pcs)
-    % this function runs a linear interpolation on an input set of data
+function [recon, coeff, explained] = svd_interpolation(data, num_pcs)
+    % this function vanilla PCA on an input set of data, and returns the
+    % coefficient matrix to use on test data
    
     % Inputs
     % data -> array of DeepLabCut tracking data to interpolate
@@ -9,6 +10,6 @@ function [interpolated, explained, coeff] = svd_interpolation(data, num_pcs)
  
         [coeff,score,~,~,explained,mu] = pca(data,'NumComponents',num_pcs);
  
-        interpolated = score * coeff' + repmat(mu,length(data),1);
+        recon = score * coeff' + repmat(mu,size(data,1),1);
         
 end

@@ -1,4 +1,5 @@
-function interpolated = ppca_interpolation(data)
+function [recon, coeff] = ppca_interpolation(data, num_pcs)         
+ 
     % this function runs a linear interpolation on an input set of data
    
     % Inputs
@@ -7,11 +8,6 @@ function interpolated = ppca_interpolation(data)
     % interpolated -> array of DLC tracking with NaNs interpolated
     
 
-    tic
-    [coeff,score,pcvar,mu,v,S] = ppca(data,7);
-    toc
+    [coeff,score,~,mu,~,~] = ppca(data,num_pcs);
     
-    %interpolated = S.Recon;
-    interpolated = score * coeff' + repmat(mu,length(data),1);
-
-end
+    recon = score * coeff' + repmat(mu,size(data,1),1);

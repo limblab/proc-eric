@@ -26,9 +26,9 @@ tic
 if strcmp(method, 'PPCA')
     [train_recon, coeff] = ppca_interpolation(Input_full_test);
 elseif strcmp(method, 'ALS')
-    [train_recon, coeff, explained] = als_interpolation(train_data, num_pcs);
+    [train_recon, explained, coeff] = als_interpolation(train_data, num_pcs);
 elseif strcmp(method, 'SVD')
-    [train_recon, coeff, explained] = svd_interpolation(train_data, num_pcs);
+    [train_recon, explained, coeff] = svd_interpolation(train_data, num_pcs);
 end
 
 times = toc;
