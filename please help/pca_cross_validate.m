@@ -1,4 +1,4 @@
-function [train_error, test_error, train_recon, test_recon, explained, times] = full_interpolation_method(method,data_full,frames_to_drop,marker,num_pcs)         
+function [train_error, test_error] = pca_cross_validate(method,max_k,data_full,frames_to_drop,marker,num_pcs)         
 
 Input_full_test = data_full;
 Input_full_test(frames_to_drop, marker) = NaN;
@@ -10,9 +10,20 @@ if strcmp(method,'SVD');
 end
     
 %% Split data into train and test sets
+train_error = zeros(1,max_k);
+test_error = zeros(1,max_k);
 
-f2d_train = frames_to_drop(1:round(length(frames_to_drop)*0.95)); % 95% of dropped frames for training set
-f2d_test = frames_to_drop(length(f2d_train)+1:end);
+for k = 1:max_k
+    if k == 1;
+        f2d_test = frames_to_drop(1:round(length(frames_to_drop)/max_k));
+        f2d_train = frames_to_drop(round(length(frames_to_drop)/max_k)+1:end);
+    elseif k == max_k;
+        f2d_test = frames_to_drop(((k-1)*round(length(frames_to_drop)/max_k)+1):end);
+        f2d_train = frames_to_drop(1:((k-1)*round(length(frames_to_drop)/max_k)));
+    else
+        f2d_test = frames_to_drop(((k-1)*round(length(frames_to_drop)/max_k):k*round(length(frames_to_drop)/max_k))); % 100/max_k % of data for test
+        f2d_train = [frames_to_drop(1:((k-1)*round(length(frames_to_drop)/max_k))-1), frames_to_drop(k*round(length(frames_to_drop)/max_k)+1:end)]; % 95% of dropped frames for training set for max_k=20
+    end
 
 %split data that's being interpolated
 train_data = Input_full_test;
@@ -26,9 +37,9 @@ tic
 if strcmp(method, 'PPCA')
     [train_recon, coeff] = ppca_interpolation(Input_full_test);
 elseif strcmp(method, 'ALS')
-    [train_recon, explained, coeff] = als_interpolation(train_data, num_pcs);
+    [train_recon, coeff, explained] = als_interpolation(train_data, num_pcs);
 elseif strcmp(method, 'SVD')
-    [train_recon, explained, coeff] = svd_interpolation(train_data, num_pcs);
+    [train_recon, coeff, explained] = svd_interpolation(train_data, num_pcs);
 end
 
 times = toc;
@@ -64,7 +75,7 @@ if sum(sum(isnan(dropped_train))) > 0 %ppca not interpolating long stretches of 
     dropped_train = dropped_train(~not_interpolated);
 end
                 
-train_error = sum(abs(dropped_train - train_before)) / numel(dropped_train); %not Euclidean distanc
+train_error(k) = sum(abs(dropped_train - train_before)) / numel(dropped_train); %not Euclidean distanc
 
 %test error
 test_before = data_full(f2d_test,marker); 
@@ -80,5 +91,10 @@ if sum(sum(isnan(dropped_test))) > 0
     dropped_test = dropped_test(~not_interpolated);
 end
 
-test_error = sum(abs(dropped_test - test_before)) / numel(dropped_test);
+test_error(k) = sum(abs(dropped_test - test_before)) / numel(dropped_test);
 
+end
+
+%% average errors
+train_error = mean(train_error);
+test_error = mean(test_error);

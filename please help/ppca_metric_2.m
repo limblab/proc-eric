@@ -25,18 +25,19 @@ score_columns =  ~cellfun('isempty',strfind(names,'score'));
 irrelevent = score_columns+ncam_columns+error_columns;
 irrelevent(end) = 1; % remove frame nums also - after getting the good frames
 ind = columns(~irrelevent);
-%% Generate test dataset
-% begin with perfect tracking
-data = interpolatable_frames(data_table,2,ind); % obtain frames without markers dropping %eg - why 2?
-frames = data(:,end);
-dont_drop = frames(diff(data(:,end))>1); % consecuative rows of data which are not consecuative video frames should not be dropped.
-Input = data(:,ind)';
-data = array2table(data,'VariableNames',names);
- 
+
 %% generate 'full' dataset to use
 data_full = table2array(data_table(:,ind));
-data_full = data_full(1:47000,:);
- 
+data_full = data_full(1:47000,:); %for 8/14, frames after 47k are useless
+
+
+%% safely interpolable frames for PPCA/ALS
+
+% removes frames with >4 landmarks per frame and >2 consecutive frames missing
+% doesn't actually guarantee 10% back right now, but tells you what's left
+[data, fnum] = interpolable_frames(data_full,10);
+
+
 %% Begin dropping markers for selected consecutative frames
 markers = cell(1,21);
 for i = 1:21 %set aside column index of the coordinates of each marker in the dataset
@@ -66,11 +67,7 @@ k = 1;
            frames_to_drop = frames2drop_full(data_full,markers_to_drop(i),10);
 %            frames_to_drop = frames2drop_full_consec(data_full,markers_to_drop(i),j,10);
 
-            %do this in interp_method?
-%            Input_full_test = data_full;
-%            Input_full_test(frames_to_drop, marker) = NaN;
- 
- 
+
             %[train_error_1, test_error_1, ~, ~, ~, ~] = full_interpolation_method('SVD',data_full,frames_to_drop,marker,1);
             %[train_error_2, test_error_2, ~, ~, ~, ~] = full_interpolation_method('SVD',data_full,frames_to_drop,marker,2);
             %[train_error_3, test_error_3, ~, ~, ~, ~] = full_interpolation_method('SVD',data_full,frames_to_drop,marker,3);
@@ -82,25 +79,20 @@ k = 1;
             %[train_error_9, test_error_9, ~, ~, ~, ~] = full_interpolation_method('SVD',data_full,frames_to_drop,marker,9);
             %[train_error_10, test_error_10, ~, ~, ~, ~] = full_interpolation_method('SVD',data_full,frames_to_drop,marker,10);
 
-            [train_error_ppca_5, test_error_ppca_5, train_recon_ppca_5, test_recon_ppca_5, ~, times_ppca_5] = full_interpolation_method('PPCA',data_full,frames_to_drop,marker,5);
-            [train_error_als_5, test_error_als_5, train_recon_als_5, test_recon_als_5, ~, times_als_5] = full_interpolation_method('ALS',data_full,frames_to_drop,marker,5);
+            [train_error_ppca_5, test_error_ppca_5, train_recon_ppca_5, test_recon_ppca_5, ~, times_ppca_5] = full_interpolation_method('PPCA',data,frames_to_drop,marker,5);
+            [train_error_als_5, test_error_als_5, train_recon_als_5, test_recon_als_5, ~, times_als_5] = full_interpolation_method('ALS',data,frames_to_drop,marker,5);
 
             %t1(i,j,k) = times_1; e1(i,j,k) = errors_1;
             %t2(i,j,k) = times_2; e2(i,j,k) = errors_2;
             %t3(i,j,k) = times_3; e3(i,j,k) = errors_3;
-            %t4(i,j,k) = times_4; 
             e4_train(i,j,k) = train_error_4;
             e4_test(i,j,k) = test_error_4;
-            %t5(i,j,k) = times_5; 
             e5_train(i,j,k) = train_error_5;
             e5_test(i,j,k) = test_error_5;
-            %t6(i,j,k) = times_6; 
             e6_train(i,j,k) = train_error_6;
             e6_test(i,j,k) = test_error_6;
-            %t7(i,j,k) = times_7; 
             e7_train(i,j,k) = train_error_7;
             e7_test(i,j,k) = test_error_7;
-            %t8(i,j,k) = times_8; 
             e8_train(i,j,k) = train_error_8;
             e8_test(i,j,k) = test_error_8;
             %t9(i,j,k) = times_9; e9(i,j,k) = errors_9;
@@ -117,7 +109,53 @@ k = 1;
     end
 %end
  
+ %% Cross-validate
  
+markers_to_drop = [1 8 16];
+
+for i = 1:3 % Number of Markers Dropped
+ 
+    marker_selected = ms(1:markers_to_drop(i));% markers to drop
+    marker = [markers{marker_selected}];
+    frames_to_drop = frames2drop_full(data_full,markers_to_drop(i),10);
+
+[train_error_cv1, test_error_cv1] = pca_cross_validate('SVD',20,data_full,frames_to_drop,marker,1);
+[train_error_cv2, test_error_cv2] = pca_cross_validate('SVD',20,data_full,frames_to_drop,marker,2);
+[train_error_cv3, test_error_cv3] = pca_cross_validate('SVD',20,data_full,frames_to_drop,marker,3); 
+[train_error_cv4, test_error_cv4] = pca_cross_validate('SVD',20,data_full,frames_to_drop,marker,4);
+[train_error_cv5, test_error_cv5] = pca_cross_validate('SVD',20,data_full,frames_to_drop,marker,5);
+[train_error_cv6, test_error_cv6] = pca_cross_validate('SVD',20,data_full,frames_to_drop,marker,6);
+[train_error_cv7, test_error_cv7] = pca_cross_validate('SVD',20,data_full,frames_to_drop,marker,7);
+[train_error_cv8, test_error_cv8] = pca_cross_validate('SVD',20,data_full,frames_to_drop,marker,8);
+[train_error_cv9, test_error_cv9] = pca_cross_validate('SVD',20,data_full,frames_to_drop,marker,9);
+[train_error_cv10, test_error_cv10] = pca_cross_validate('SVD',20,data_full,frames_to_drop,marker,10);
+
+end
+
+%% Plot cross-val
+
+PCs = [1:10];
+train_errors = [train_error_cv1 train_error_cv2 train_error_cv3 train_error_cv4 train_error_cv5 train_error_cv6 train_error_cv7 train_error_cv8 train_error_cv9 train_error_cv10];
+test_errors = [test_error_cv1 test_error_cv2 test_error_cv3 test_error_cv4 test_error_cv5 test_error_cv6 test_error_cv7 test_error_cv8 test_error_cv9 test_error_cv10];
+
+figure
+hold on
+
+plot(PCs,train_errors,'linewidth',3,'Color','#7E2F8E')
+plot(PCs,test_errors,'linewidth',3,'Color','#77AC30')
+
+plot(PCs,train_errors,'linewidth',3,'Color','#4DBEEE')
+plot(PCs,test_errors,'linewidth',3,'Color','#A2142F')
+
+plot(PCs,train_errors,'linewidth',3,'Color','#D95319')
+plot(PCs,test_errors,'linewidth',3,'Color','#0072BD')
+
+title('20-fold Cross Validation of PCA - SVD')
+subtitle('Semi-restraint')
+xlabel(' Number of PCs')
+ylabel('Error')
+legend('Train - 1 Marker Dropped', 'Test - 1 Marker Dropped', 'Train - 8 Markers Dropped', 'Test - 8 Markers Dropped', 'Train - 16 Markers Dropped', 'Test - 16 Markers Dropped')
+
 %% Create heatmap of average error over k runs
 %check = error(:,1);
 figure
