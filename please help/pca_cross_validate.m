@@ -35,7 +35,7 @@ test_data = Input_full_test(f2d_test,:);
 tic
 
 if strcmp(method, 'PPCA')
-    [train_recon, coeff] = ppca_interpolation(Input_full_test);
+    [train_recon, coeff] = ppca_interpolation(Input_full_test, num_pcs);
 elseif strcmp(method, 'ALS')
     [train_recon, coeff, explained] = als_interpolation(train_data, num_pcs);
 elseif strcmp(method, 'SVD')

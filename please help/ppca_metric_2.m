@@ -35,8 +35,9 @@ data_full = data_full(1:47000,:); %for 8/14, frames after 47k are useless
 
 % removes frames with >4 landmarks per frame and >2 consecutive frames missing
 % doesn't actually guarantee 10% back right now, but tells you what's left
+% note: fnums are 1-indexed
 [data, fnum] = interpolable_frames(data_full,10);
-
+data = [data fnum]; % need fnums to pick out the dropped frames that go into train set
 
 %% Begin dropping markers for selected consecutative frames
 markers = cell(1,21);
@@ -48,13 +49,13 @@ end
 %scrambled = Input(:,randperm(size(Input, 2)));
  
 markers_to_drop = [1 4 8 16 20];
- 
+
 %% Interpolate
  
-%for k = 1:20 % number of iterations of random dropping and interpolating to run
-k = 1;
+for k = 1:20 % number of iterations of random dropping and interpolating to run
+%k = 1;
     ms = randperm(21); % randomly select markers
-    for i = 1:5 % Number of Markers Dropped
+    for i = 3 % Number of Markers Dropped
  
         marker_selected = ms(1:markers_to_drop(i));% markers to drop
         marker = [markers{marker_selected}];
@@ -64,50 +65,55 @@ k = 1;
             j=1;
             
             % put frames dopped back into full dataset
-%           frames_to_drop = frames2drop_full(data_full,markers_to_drop(i),10);
+%            frames_to_drop = frames2drop_full(data_full,markers_to_drop(i),10);
 %           frames_to_drop = frames2drop_full_consec(data_full,markers_to_drop(i),j,10);
-
+            
+            % random drops
+            Input_full_test = data_full;
+            Input_full_test(frames_to_drop, marker) = NaN;
+            
+            % pull out interpolatable frames with drops
 
             %[train_error_1, test_error_1, ~, ~, ~, ~] = full_interpolation_method('SVD',data_full,frames_to_drop,marker,1);
             %[train_error_2, test_error_2, ~, ~, ~, ~] = full_interpolation_method('SVD',data_full,frames_to_drop,marker,2);
             %[train_error_3, test_error_3, ~, ~, ~, ~] = full_interpolation_method('SVD',data_full,frames_to_drop,marker,3);
-            [train_error_4, test_error_4, train_recon_4, test_recon_4, ~, ~] = full_interpolation_method('SVD',data_full,frames_to_drop,marker,4);
-            [train_error_5, test_error_5, train_recon_5, test_recon_5, ~, ~] = full_interpolation_method('SVD',data_full,frames_to_drop,marker,5);
-            [train_error_6, test_error_6, train_recon_6, test_recon_6, ~, ~,] = full_interpolation_method('SVD',data_full,frames_to_drop,marker,6);
-            [train_error_7, test_error_7, train_recon_7, test_recon_7, ~, ~] = full_interpolation_method('SVD',data_full,frames_to_drop,marker,7);
-            [train_error_8, test_error_8, train_recon_8, test_recon_8, ~, ~] = full_interpolation_method('SVD',data_full,frames_to_drop,marker,8);
+            %[train_error_4, test_error_4, train_recon_4, test_recon_4, ~, ~] = full_interpolation_method('SVD',data,frames_to_drop,marker,4);
+            %[train_error_5, test_error_5, train_recon_5, test_recon_5, ~, ~] = full_interpolation_method('SVD',data,frames_to_drop,marker,5);
+            %[train_error_6, test_error_6, train_recon_6, test_recon_6, ~, ~,] = full_interpolation_method('SVD',data,frames_to_drop,marker,6);
+            %[train_error_7, test_error_7, train_recon_7, test_recon_7, ~, ~] = full_interpolation_method('SVD',data,frames_to_drop,marker,7);
+            %[train_error_8, test_error_8, train_recon_8, test_recon_8, ~, ~] = full_interpolation_method('SVD',data,frames_to_drop,marker,8);
             %[train_error_9, test_error_9, ~, ~, ~, ~] = full_interpolation_method('SVD',data_full,frames_to_drop,marker,9);
             %[train_error_10, test_error_10, ~, ~, ~, ~] = full_interpolation_method('SVD',data_full,frames_to_drop,marker,10);
 
-            [train_error_ppca_5, test_error_ppca_5, train_recon_ppca_5, test_recon_ppca_5, ~, times_ppca_5] = full_interpolation_method('PPCA',data,markers_to_drop(i),marker,5);
-            [train_error_als_5, test_error_als_5, train_recon_als_5, test_recon_als_5, ~, times_als_5] = full_interpolation_method('ALS',data,frames_to_drop,marker,5);
+%            [train_error_ppca_5, test_error_ppca_5, train_recon_ppca_5, test_recon_ppca_5, ~, times_ppca_5] = full_interpolation_method('PPCA',data,markers_to_drop(i),marker,5);
+            [train_error_als_5, test_error_als_5, train_recon_als_5, test_recon_als_5, ~, times_als_5] = full_interpolation_method('ALS',data,markers_to_drop(i),marker,5);
 
             %t1(i,j,k) = times_1; e1(i,j,k) = errors_1;
             %t2(i,j,k) = times_2; e2(i,j,k) = errors_2;
             %t3(i,j,k) = times_3; e3(i,j,k) = errors_3;
-            e4_train(i,j,k) = train_error_4;
-            e4_test(i,j,k) = test_error_4;
-            e5_train(i,j,k) = train_error_5;
-            e5_test(i,j,k) = test_error_5;
-            e6_train(i,j,k) = train_error_6;
-            e6_test(i,j,k) = test_error_6;
-            e7_train(i,j,k) = train_error_7;
-            e7_test(i,j,k) = test_error_7;
-            e8_train(i,j,k) = train_error_8;
-            e8_test(i,j,k) = test_error_8;
+            %e4_train(i,j,k) = train_error_4;
+            %e4_test(i,j,k) = test_error_4;
+            %e5_train(i,j,k) = train_error_5;
+            %e5_test(i,j,k) = test_error_5;
+            %e6_train(i,j,k) = train_error_6;
+            %e6_test(i,j,k) = test_error_6;
+            %e7_train(i,j,k) = train_error_7;
+            %e7_test(i,j,k) = test_error_7;
+            %e8_train(i,j,k) = train_error_8;
+            %e8_test(i,j,k) = test_error_8;
             %t9(i,j,k) = times_9; e9(i,j,k) = errors_9;
             %t10(i,j,k) = times_10; e10(i,j,k) = errors_10; 
             
-            e5_ppca_train(i,j,k) = train_error_ppca_5;
-            e5_ppca_test(i,j,k) = test_error_ppca_5;
-            times_ppca(i,j,k) = times_ppca_5;
+            %e5_ppca_train(i,j,k) = train_error_ppca_5;
+            %e5_ppca_test(i,j,k) = test_error_ppca_5;
+            %times_ppca(i,j,k) = times_ppca_5;
             
             e5_als_train(i,j,k) = train_error_als_5;
             e5_als_test(i,j,k) = test_error_als_5;
             times_als(i,j,k) = times_als_5;            
 %            end
     end
-%end
+end
  
  %% Cross-validate
  
@@ -156,6 +162,25 @@ xlabel(' Number of PCs')
 ylabel('Error')
 legend('Train - 1 Marker Dropped', 'Test - 1 Marker Dropped', 'Train - 8 Markers Dropped', 'Test - 8 Markers Dropped', 'Train - 16 Markers Dropped', 'Test - 16 Markers Dropped')
 
+
+%% Plot error vs markers dropped
+
+figure
+hold on
+
+plot(markers_to_drop, e5_train,'linewidth',3,'Color','#7E2F8E')
+plot(markers_to_drop, e5_test,'linewidth',3,'Color','#7E2F8E','linestyle','--')
+
+plot(markers_to_drop, e5_als_train,'linewidth',3,'Color','#4DBEEE')
+plot(markers_to_drop, e5_als_test,'linewidth',3,'Color','#4DBEEE','linestyle','--')
+
+plot(markers_to_drop, e5_ppca_train,'linewidth',3,'Color','#D95319')
+plot(markers_to_drop, e5_ppca_test,'linewidth',3,'Color','#D95319','linestyle','--')
+
+title('Error vs Markers Dropped - 5 PCs comparison')
+xlabel('Number of Markers Dropped')
+ylabel('Error (mm)')
+legend('SVD Train','SVD Test','ALS Train','ALS Test','PPCA Train','PPCA Test')
 %% Create heatmap of average error over k runs
 %check = error(:,1);
 figure

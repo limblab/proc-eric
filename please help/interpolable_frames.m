@@ -55,7 +55,7 @@ for landmark = 1:63
     
     if runs(end,landmark) == 1 & runs(end-1,landmark) == 1
         if runs(end-2,landmark) == 0
-            runs(end-1:end,landmark) == 0;
+            runs(end-1:end,landmark) = 0;
         end 
     elseif runs(end,landmark) == 1 & runs(end-1,landmark) == 0
         runs(end,landmark) = 0; 
@@ -64,17 +64,17 @@ for landmark = 1:63
 end
 
 % if any landmarks still need to be dropped, full frame must be dropped.
-% first change values of frames to be dropped to 0 (deleting messes up loop)
+% first change values of frames to be dropped to 1 (deleting messes up loop)
 for landmark = 1:63
     for frame = 1:length(runs)
         if runs(frame,landmark) == 1
-            data(frame,:) = 0;
+            data(frame,:) = 1;
         end
     end
 end
 
 %finally remove the frames and takes out the frame numbers
-data(data == 0) = [];
+data(data == 1) = [];
 data = reshape(data, numel(data)/64, 64);
 
 fnum = data(:,64);

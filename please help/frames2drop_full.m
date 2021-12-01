@@ -12,5 +12,5 @@ for frame = 1:length(data_full)
 end
 
 frames = frames(randperm(length(frames))); %shuffle
-frames_to_drop = frames(1:round(length(frames) / percent_to_drop));
+frames_to_drop = frames(1:round(length(frames) * (percent_to_drop / 100)));
    
