@@ -1,15 +1,9 @@
-function [train_error, test_error, train_recon, test_recon, explained, times] = full_interpolation_method(method,data,markers_to_drop,marker,num_pcs)         
+function [train_error, test_error, train_recon, test_recon, explained, times, f2d_train, train_ind] = full_interpolation_method(method,data,markers_to_drop,marker,num_pcs)         
 
 %% Pre-processing
 
 fnum = data(:,64);
 data = data(:,1:63);
-
-%% If doing SVD PCA, need to do linear interp on input first
-
-if strcmp(method,'SVD');
-    data = fillmissing(data,'linear');
-end
 
 %% Split data into train and test sets
 
@@ -30,6 +24,13 @@ test_data = data(test_ind,:); %this is very problematic
 f2d_train = frames2drop_full(train_data,markers_to_drop,10); % 10% of train set gets extra drops
 train_drop = train_data;
 train_drop(f2d_train, marker) = NaN;
+
+%% If doing SVD PCA, need to do linear interp on input first
+
+if strcmp(method,'SVD');
+    data = fillmissing(data,'linear');
+    train_drop = data(train_ind, :);
+end
 
 %% Interpolate training data
 
