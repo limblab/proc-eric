@@ -20,8 +20,8 @@ params = struct( ...
     'sorted',1, ...
     'requires_raw_emg',1);
 
-base_dir = '/Users/ercrg/LimbLab/data/Pop_18E3/CerebusData/20211009/';
-file_name = '20211009_Pop_FR_001';
+base_dir = '/Users/ercrg/LimbLab/data/Pop_18E3/CerebusData/20211209/';
+file_name = '20211209_Pop_FR_001';
 map_dir = '/Users/ercrg/LimbLab/data/Pop_18E3/Array Map Files/Implant_2020_01/6250-002086/';
 map_name = 'SN 6250-002086.cmp';
 mat_exists = 0;
@@ -62,13 +62,13 @@ end
 smoothed_binned_spikes_sorted_50ms = smoothdata(binned_spikes_sorted,2,'gaussian',1.5); %2 smooths along rows, default is down columns
 smoothed_binned_spikes_sorted = smoothdata(binned_spikes_sorted,2,'gaussian',10); %just seeing what this looks like
 
-ns3 = openNSx('/Users/ercrg/LimbLab/data/Pop_18E3/CerebusData/20211009/20211009_Pop_FR_001.ns3');
+ns3 = openNSx('/Users/ercrg/LimbLab/data/Pop_18E3/CerebusData/20211209/20211209_Pop_FR_001.ns3');
 analog_fs = ns3.MetaTags.SamplingFreq;
 nev_fs = ns3.MetaTags.TimeRes;
 video_sync_pulses = ns3.Data(12,:); %should usually be 13, but was down a channel on 10/9
 %binned_sync_pulses = bin_sync_pulses(video_sync_pulses,params.bin_width,analog_fs);
 
 %save file - should append to simplified if it exists or creat a new name if it doesn't.
-save_dir = '/Users/ercrg/LimbLab/data/Pop_18E3/FIU Datashare/20211009/';
+save_dir = '/Users/ercrg/LimbLab/data/Pop_18E3/FIU Datashare/20211209/UC/';
 save_name = strcat(save_dir, file_name,'_simplified_sorted.mat');
 save(save_name, 'analog_fs', 'nev_fs', 'binned_spikes_sorted', 'smoothed_binned_spikes_sorted', 'smoothed_binned_spikes_sorted_50ms', 'spike_timestamps_sorted', 'units_sorted', 'video_sync_pulses');

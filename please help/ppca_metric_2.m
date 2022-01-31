@@ -52,11 +52,11 @@ markers_to_drop = [1 4 8 16 20];
 
 %% Interpolate
  
-%for k = 1:20 % number of iterations of random dropping and interpolating to run
-k = 1;
+for k = 2:20 % number of iterations of random dropping and interpolating to run
+%k = 1;
     ms = randperm(21); % randomly select markers
-    for i = 3 % Number of Markers Dropped
- 
+    %for i = 3 % Number of Markers Dropped
+        i = 3;
         marker_selected = ms(1:markers_to_drop(i));% markers to drop
         marker = [markers{marker_selected}];
 %        number = round(length(Input)*(10/100)); % number of groups of consecuative frames to drop
@@ -74,38 +74,38 @@ k = 1;
             
             % pull out interpolatable frames with drops
 
-            %[~, ~, train_recon_1, ~, ~, ~, f2d_train_1] = full_interpolation_method('SVD',data,markers_to_drop(i),marker,1);
-            %[~, ~, train_recon_2, ~, ~, ~, f2d_train_2] = full_interpolation_method('SVD',data,markers_to_drop(i),marker,2);
-            %[~, ~, train_recon_3, ~, ~, ~, f2d_train_3] = full_interpolation_method('SVD',data,markers_to_drop(i),marker,3);
-            [~, ~, train_recon_4, ~, ~, ~, f2d_train_4, train_ind_4] = full_interpolation_method('SVD',data,markers_to_drop(i),marker,4);
-            [~, ~, train_recon_5, ~, ~, ~, f2d_train_5, train_ind_5] = full_interpolation_method('SVD',data,markers_to_drop(i),marker,5);
-            [~, ~, train_recon_6, ~, ~, ~, f2d_train_6, train_ind_6] = full_interpolation_method('SVD',data,markers_to_drop(i),marker,6);
-            [~, ~, train_recon_7, ~, ~, ~, f2d_train_7, train_ind_7] = full_interpolation_method('SVD',data,markers_to_drop(i),marker,7);
-            [~, ~, train_recon_8, ~, ~, ~, f2d_train_8, train_ind_8] = full_interpolation_method('SVD',data,markers_to_drop(i),marker,8);
-            [~, ~, train_recon_9, ~, ~, ~, f2d_train_9, train_ind_9] = full_interpolation_method('SVD',data,markers_to_drop(i),marker,9);
-            [~, ~, train_recon_10, ~, ~, ~, f2d_train_10, train_ind_10] = full_interpolation_method('SVD',data,markers_to_drop(i),marker,10);
+            [train_error_1, ~, train_recon_1, ~, ~, ~, f2d_train_1] = full_interpolation_method('SVD',data,markers_to_drop(i),marker,1);
+            [train_error_2, ~, train_recon_2, ~, ~, ~, f2d_train_2] = full_interpolation_method('SVD',data,markers_to_drop(i),marker,2);
+            [train_error_3, ~, train_recon_3, ~, ~, ~, f2d_train_3] = full_interpolation_method('SVD',data,markers_to_drop(i),marker,3);
+            %[~, ~, train_recon_4, ~, ~, ~, f2d_train_4, train_ind_4] = full_interpolation_method('SVD',data,markers_to_drop(i),marker,4);
+            %[~, ~, train_recon_5, ~, ~, ~, f2d_train_5, train_ind_5] = full_interpolation_method('SVD',data,markers_to_drop(i),marker,5);
+            %[~, ~, train_recon_6, ~, ~, ~, f2d_train_6, train_ind_6] = full_interpolation_method('SVD',data,markers_to_drop(i),marker,6);
+            %[~, ~, train_recon_7, ~, ~, ~, f2d_train_7, train_ind_7] = full_interpolation_method('SVD',data,markers_to_drop(i),marker,7);
+            %[~, ~, train_recon_8, ~, ~, ~, f2d_train_8, train_ind_8] = full_interpolation_method('SVD',data,markers_to_drop(i),marker,8);
+            [train_error_9, ~, train_recon_9, ~, ~, ~, f2d_train_9, train_ind_9] = full_interpolation_method('SVD',data,markers_to_drop(i),marker,9);
+            [train_error_10, ~, train_recon_10, ~, ~, ~, f2d_train_10, train_ind_10] = full_interpolation_method('SVD',data,markers_to_drop(i),marker,10);
 
 %            [train_error_ppca_5, test_error_ppca_5, train_recon_ppca_5, test_recon_ppca_5, ~, times_ppca_5] = full_interpolation_method('PPCA',data,markers_to_drop(i),marker,5);
  %           
-            %[~, ~, train_recon_als_1, ~, ~, ~, f2d_train_als_1] = full_interpolation_method('ALS',data,markers_to_drop(i),marker,1);
-            %[~, ~, train_recon_als_2, ~, ~, ~, f2d_train_als_2] = full_interpolation_method('ALS',data,markers_to_drop(i),marker,2);
-            %[~, ~, train_recon_als_3, ~, ~, ~, f2d_train_als_3] = full_interpolation_method('ALS',data,markers_to_drop(i),marker,3);
-            [~, ~, train_recon_als_4, ~, ~, ~, f2d_train_als_4, train_ind_als_4] = full_interpolation_method('ALS',data,markers_to_drop(i),marker,3);
-            [~, ~, train_recon_als_5, ~, ~, ~, f2d_train_als_5, train_ind_als_5] = full_interpolation_method('ALS',data,markers_to_drop(i),marker,5);
-            [~, ~, train_recon_als_6, ~, ~, ~, f2d_train_als_6, train_ind_als_6] = full_interpolation_method('ALS',data,markers_to_drop(i),marker,5);
-            [~, ~, train_recon_als_7, ~, ~, ~, f2d_train_als_7, train_ind_als_7] = full_interpolation_method('ALS',data,markers_to_drop(i),marker,5);
-            [~, ~, train_recon_als_8, ~, ~, ~, f2d_train_als_8, train_ind_als_8] = full_interpolation_method('ALS',data,markers_to_drop(i),marker,5);
-            [~, ~, train_recon_als_9, ~, ~, ~, f2d_train_als_9, train_ind_als_9] = full_interpolation_method('ALS',data,markers_to_drop(i),marker,9);
-            [~, ~, train_recon_als_10, ~, ~, ~, f2d_train_als_10, train_ind_als_10] = full_interpolation_method('ALS',data,markers_to_drop(i),marker,10);
+            [train_error_als_1, ~, train_recon_als_1, ~, ~, ~, f2d_train_als_1] = full_interpolation_method('ALS',data,markers_to_drop(i),marker,1);
+            [train_error_als_2, ~, train_recon_als_2, ~, ~, ~, f2d_train_als_2] = full_interpolation_method('ALS',data,markers_to_drop(i),marker,2);
+            [train_error_als_3, ~, train_recon_als_3, ~, ~, ~, f2d_train_als_3] = full_interpolation_method('ALS',data,markers_to_drop(i),marker,3);
+            %[~, ~, train_recon_als_4, ~, ~, ~, f2d_train_als_4, train_ind_als_4] = full_interpolation_method('ALS',data,markers_to_drop(i),marker,3);
+            %[~, ~, train_recon_als_5, ~, ~, ~, f2d_train_als_5, train_ind_als_5] = full_interpolation_method('ALS',data,markers_to_drop(i),marker,5);
+            %[~, ~, train_recon_als_6, ~, ~, ~, f2d_train_als_6, train_ind_als_6] = full_interpolation_method('ALS',data,markers_to_drop(i),marker,5);
+            %[~, ~, train_recon_als_7, ~, ~, ~, f2d_train_als_7, train_ind_als_7] = full_interpolation_method('ALS',data,markers_to_drop(i),marker,5);
+            %[~, ~, train_recon_als_8, ~, ~, ~, f2d_train_als_8, train_ind_als_8] = full_interpolation_method('ALS',data,markers_to_drop(i),marker,5);
+            [train_error_als_9, ~, train_recon_als_9, ~, ~, ~, f2d_train_als_9, train_ind_als_9] = full_interpolation_method('ALS',data,markers_to_drop(i),marker,9);
+            [train_error_als_10, ~, train_recon_als_10, ~, ~, ~, f2d_train_als_10, train_ind_als_10] = full_interpolation_method('ALS',data,markers_to_drop(i),marker,10);
 
 
 
             %t1(i,j,k) = times_1;
-           % e1_train(i,j,k) = train_error_1;
+            e1_train(i,j,k) = train_error_1;
             %t2(i,j,k) = times_2;
-           % e2_train(i,j,k) = train_error_2;
+            e2_train(i,j,k) = train_error_2;
             %t3(i,j,k) = times_3;
-            %e3_train(i,j,k) = train_error_3;
+            e3_train(i,j,k) = train_error_3;
             %e4_train(i,j,k) = train_error_4;
             %e4_test(i,j,k) = test_error_4;
             %e5_train(i,j,k) = train_error_5;
@@ -117,9 +117,9 @@ k = 1;
             %e8_train(i,j,k) = train_error_8;
             %e8_test(i,j,k) = test_error_8;
             %t9(i,j,k) = times_9;
-           % e9_train(i,j,k) = train_error_9;
+            e9_train(i,j,k) = train_error_9;
             %t10(i,j,k) = times_10;
-            %e10_train(i,j,k) = train_error_10;
+            e10_train(i,j,k) = train_error_10;
             
             %e5_ppca_train(i,j,k) = train_error_ppca_5;
             %e5_ppca_test(i,j,k) = test_error_ppca_5;
@@ -129,23 +129,23 @@ k = 1;
       %      e5_als_test(i,j,k) = test_error_als_5;
        %     times_als(i,j,k) = times_als_5;   
 
-         %   e1_als_train_full(i,j,k) = train_error_als_1;
+           e1_als_train(i,j,k) = train_error_als_1;
           %  e1_als_test_full(i,j,k) = test_error_als_1;
            % times1_als_full(i,j,k) = times_als_1;  
             
-          %  e2_als_train_full(i,j,k) = train_error_als_2;
+            e2_als_train(i,j,k) = train_error_als_2;
            % e2_als_test_full(i,j,k) = test_error_als_2;
             %times2_als_full(i,j,k) = times_als_2; 
             
-        %    e3_als_train_full(i,j,k) = train_error_als_3;
+            e3_als_train(i,j,k) = train_error_als_3;
          %   e3_als_test_full(i,j,k) = test_error_als_3;
           %  times3_als_full(i,j,k) = times_als_3;  
             
-         %   e9_als_train_full(i,j,k) = train_error_als_9;
+           e9_als_train(i,j,k) = train_error_als_9;
           %  e9_als_test_full(i,j,k) = test_error_als_9;
            % times9_als_full(i,j,k) = times_als_9;  
             
-         %   e10_als_train_full(i,j,k) = train_error_als_10;
+            e10_als_train(i,j,k) = train_error_als_10;
           %  e10_als_test_full(i,j,k) = test_error_als_10;
            % times10_als_full(i,j,k) = times_als_10;  
 
@@ -258,7 +258,7 @@ ylim([50 100])
 
 PCs = [1:10];
 %error_1 = [mean(e1(1,:,:)) mean(e2(1,:,:)) mean(e3(1,:,:)) mean(e4(1,:,:)) mean(e5(1,:,:)) mean(e6(1,:,:)) mean(e7(1,:,:)) mean(e8(1,:,:)) mean(e9(1,:,:)) mean(e10(1,:,:))];
-train_error_svd_8 = [mean(e1_train(3,:,:)) mean(e2_train(3,:,:)) mean(e3_train(3,:,:)) mean(e4_train(3,:,:)) mean(e5_train(3,:,:)) mean(e6_train(3,:,:)) mean(e7_train(3,:,:)) mean(e8_train(3,:,:)) mean(e8_train(3,:,:)) mean(e10_train(3,:,:))];
+train_error_svd_8 = [mean(e1_train(3,:,:)) mean(e2_train(3,:,:)) mean(e3_train(3,:,:)) mean(e4_train(3,:,:)) mean(e5_train(3,:,:)) mean(e6_train(3,:,:)) mean(e7_train(3,:,:)) mean(e8_train(3,:,:)) mean(e9_train(3,:,:)) mean(e10_train(3,:,:))];
 train_error_als_8 = [mean(e1_als_train(3,:,:)) mean(e2_als_train(3,:,:)) mean(e3_als_train(3,:,:)) mean(e4_als_train(3,:,:)) mean(e5_als_train(3,:,:)) mean(e6_als_train(3,:,:)) mean(e7_als_train(3,:,:)) mean(e8_als_train(3,:,:)) mean(e9_als_train(3,:,:)) mean(e10_als_train(3,:,:))];
 %error_16 = [mean(e1(4,:,:)) mean(e2(4,:,:)) mean(e3(4,:,:)) mean(e4(4,:,:)) mean(e5(4,:,:)) mean(e6(4,:,:)) mean(e7(4,:,:)) mean(e8(4,:,:)) mean(e9(4,:,:)) mean(e10(4,:,:))];
 
